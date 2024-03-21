@@ -1,0 +1,34 @@
+---
+import { Category } from "astro:db";
+import { eq } from "astro:db";
+import { db, User, Todo } from "astro:db";
+const users = await db.select().from(User);
+const todos = await db
+  .select()
+  .from(Todo)
+  .innerJoin(User, eq(Todo.user_id, User.id))
+  .innerJoin(Category, eq(Todo.category_id, Category.id))
+---
+
+<h1> Usuarios </h1>
+
+<ul>
+  {
+    users.map(user => (
+      <li>
+        {user.username}
+      </li>
+    ))
+  }
+
+<h1> TODOS </h1>
+
+<ul>
+  {
+    todos.map(todo => (
+      <li>
+        {`Title: ${todo.Todo.title}, Category: ${todo.Category.label}, Creator: ${todo.User.username}`}
+      </li>
+    ))
+  }
+</ul>
